@@ -1,0 +1,8 @@
+com/outsera/razzie_api/RazzieApiApplication.class
+com/outsera/razzie_api/service/ProducerService.class
+com/outsera/razzie_api/repository/MovieRepository.class
+com/outsera/razzie_api/controller/ProducerController.class
+com/outsera/razzie_api/dto/IntervalResponseDTO.class
+com/outsera/razzie_api/dto/ProducerIntervalDTO.class
+com/outsera/razzie_api/entity/Movie.class
+com/outsera/razzie_api/loader/CsvDataLoader.class

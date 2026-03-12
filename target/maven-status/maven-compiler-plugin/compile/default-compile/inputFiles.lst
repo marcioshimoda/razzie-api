@@ -1,0 +1,8 @@
+/Users/marcioshimoda/Documents/desenvolvimento/razzie-api/src/main/java/com/outsera/razzie_api/RazzieApiApplication.java
+/Users/marcioshimoda/Documents/desenvolvimento/razzie-api/src/main/java/com/outsera/razzie_api/controller/ProducerController.java
+/Users/marcioshimoda/Documents/desenvolvimento/razzie-api/src/main/java/com/outsera/razzie_api/dto/IntervalResponseDTO.java
+/Users/marcioshimoda/Documents/desenvolvimento/razzie-api/src/main/java/com/outsera/razzie_api/dto/ProducerIntervalDTO.java
+/Users/marcioshimoda/Documents/desenvolvimento/razzie-api/src/main/java/com/outsera/razzie_api/entity/Movie.java
+/Users/marcioshimoda/Documents/desenvolvimento/razzie-api/src/main/java/com/outsera/razzie_api/loader/CsvDataLoader.java
+/Users/marcioshimoda/Documents/desenvolvimento/razzie-api/src/main/java/com/outsera/razzie_api/repository/MovieRepository.java
+/Users/marcioshimoda/Documents/desenvolvimento/razzie-api/src/main/java/com/outsera/razzie_api/service/ProducerService.java
