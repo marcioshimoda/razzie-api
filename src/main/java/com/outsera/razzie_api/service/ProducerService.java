@@ -24,14 +24,13 @@ public class ProducerService {
 
         List<Movie> winners = movieRepository.findByWinnerTrue();
         Map<String, List<Integer>> producerWins = buildProducerWinsMap(winners);
-        List<ProducerIntervalDTO> intervals = calculateIntervals(producerWins);
 
-        return buildResponse(intervals);
+        return calculateIntervals(producerWins);
     }
 
     private List<String> parseProducers(String producers) {
 
-        return Arrays.stream(producers.split(",|\\s+and\\s+"))
+        return Arrays.stream(producers.split(",\\s*|\\s+and\\s+"))
                 .map(String::trim)
                 .filter(p -> !p.isBlank())
                 .toList();
@@ -50,56 +49,41 @@ public class ProducerService {
                 ));
     }
 
-    private List<ProducerIntervalDTO> calculateIntervals(Map<String, List<Integer>> producerWins) {
+    private IntervalResponseDTO calculateIntervals(Map<String, List<Integer>> producerWins) {
         log.debug("Calculando os intervalos de prêmios para {} produtores", producerWins.size());
 
-        List<ProducerIntervalDTO> intervals = new ArrayList<>();
+        int minInterval = Integer.MAX_VALUE;
+        int maxInterval = Integer.MIN_VALUE;
+
+        List<ProducerIntervalDTO> minList = new ArrayList<>();
+        List<ProducerIntervalDTO> maxList = new ArrayList<>();
+
         for (Map.Entry<String, List<Integer>> entry : producerWins.entrySet()) {
-            List<Integer> years = entry.getValue()
-                    .stream()
-                    .sorted()
-                    .toList();
+                String producer = entry.getKey();
+                List<Integer> years = entry.getValue();
+                Collections.sort(years);
 
-            if (years.size() < 2) continue;
+                for (int i = 1; i < years.size(); i++) {
+                        int interval = years.get(i) - years.get(i - 1);
+                        ProducerIntervalDTO dto = new ProducerIntervalDTO(producer, interval, years.get(i - 1), years.get(i));
 
-            for (int i = 1; i < years.size(); i++) {
-                int previous = years.get(i - 1);
-                int next = years.get(i);
+                        if (interval < minInterval) {
+                                minInterval = interval;
+                                minList.clear();
+                                minList.add(dto);
+                        } else if (interval == minInterval) {
+                                minList.add(dto);
+                        }
 
-                intervals.add(
-                        new ProducerIntervalDTO(
-                                entry.getKey(),
-                                next - previous,
-                                previous,
-                                next
-                        )
-                );
-            }
+                        if (interval > maxInterval) {
+                                maxInterval = interval;
+                                maxList.clear();
+                                maxList.add(dto);
+                        } else if (interval == maxInterval) {
+                                maxList.add(dto);
+                        }
+                }
         }
-
-        return intervals;
-    }
-
-    private IntervalResponseDTO buildResponse(List<ProducerIntervalDTO> intervals) {
-
-        int minInterval = intervals.stream()
-                .mapToInt(ProducerIntervalDTO::getInterval)
-                .min()
-                .orElse(0);
-        int maxInterval = intervals.stream()
-                .mapToInt(ProducerIntervalDTO::getInterval)
-                .max()
-                .orElse(0);
-
-        List<ProducerIntervalDTO> minList = intervals.stream()
-                .filter(i -> i.getInterval() == minInterval)
-                .sorted(Comparator.comparing(ProducerIntervalDTO::getProducer))
-                .toList();
-
-        List<ProducerIntervalDTO> maxList = intervals.stream()
-                .filter(i -> i.getInterval() == maxInterval)
-                .sorted(Comparator.comparing(ProducerIntervalDTO::getProducer))
-                .toList();
 
         return new IntervalResponseDTO(minList, maxList);
     }
